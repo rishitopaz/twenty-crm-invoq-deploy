@@ -1,0 +1,10 @@
+# HTTPS for the CRM; the certificate is fetched and renewed automatically (ports 80 and 443 must reach this server).
+{$CRM_HOST} {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		-Server
+	}
+	reverse_proxy server:3000
+}

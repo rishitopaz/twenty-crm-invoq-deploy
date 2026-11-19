@@ -1,0 +1,103 @@
+# Twenty CRM (INVOQ / Retail) production stack: Twenty server + worker + Postgres + Redis, and Caddy for HTTPS.
+# Run from the repo root:  docker compose --env-file .env up -d     (scripts/import-export.sh does it for you)
+# Only Caddy publishes ports (80, 443); everything else talks over the private compose network.
+name: twenty-invoq
+
+x-logging: &logging # cap each container's log at 5 x 10 MB
+  driver: json-file
+  options: {max-size: "10m", max-file: "5"}
+
+x-twenty: &twenty
+  image: twentycrm/twenty:${TAG}
+  restart: always
+  logging: *logging
+  volumes:
+    - server-local-data:/app/packages/twenty-server/.local-storage
+  environment: &twenty-env
+    PG_DATABASE_URL: postgres://postgres:${PG_DATABASE_PASSWORD}@db:5432/default
+    SERVER_URL: https://${CRM_HOST}
+    REDIS_URL: redis://redis:6379
+    STORAGE_TYPE: local
+    APP_SECRET: ${APP_SECRET}
+    ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+    FALLBACK_ENCRYPTION_KEY: ${FALLBACK_ENCRYPTION_KEY:-}
+    LOGIC_FUNCTION_TYPE: LOCAL # workflow code steps run inside this container: only trusted admins may edit workflows
+    TELEMETRY_ENABLED: "false"
+
+services:
+  caddy:
+    image: caddy:2
+    restart: always
+    logging: *logging
+    ports: ["80:80", "443:443"]
+    environment:
+      CRM_HOST: ${CRM_HOST}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on: [server]
+
+  server:
+    <<: *twenty
+    stop_grace_period: 120s
+    environment:
+      <<: *twenty-env
+      NODE_PORT: 3000
+      IS_SIGN_UP_DISABLED: ${IS_SIGN_UP_DISABLED:-true} # no new workspaces from the public internet; members join by invitation. Set false in .env only to create the very first admin account, then back to true
+    depends_on:
+      db: {condition: service_healthy}
+      redis: {condition: service_healthy}
+    healthcheck:
+      test: curl --fail http://localhost:3000/healthz
+      interval: 10s
+      timeout: 5s
+      retries: 60
+      start_period: 120s # a version change runs database upgrades first
+
+  worker:
+    <<: *twenty
+    command: ["yarn", "worker:prod"]
+    environment:
+      <<: *twenty-env
+      DISABLE_DB_MIGRATIONS: "true" # the server runs them
+      DISABLE_CRON_JOBS_REGISTRATION: "true"
+    depends_on:
+      db: {condition: service_healthy}
+      server: {condition: service_healthy}
+
+  db:
+    image: postgres:16
+    restart: always
+    logging: *logging
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: default
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${PG_DATABASE_PASSWORD}
+    healthcheck:
+      test: pg_isready -U postgres -h localhost -d default
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7
+    restart: always
+    logging: *logging
+    command: ["--maxmemory-policy", "noeviction", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  db-data:
+  redis-data:
+  server-local-data:
+  caddy-data:
+  caddy-config:

@@ -1,0 +1,8 @@
+.env
+import/
+*.sql
+*.sql.gz
+*.tgz
+secrets.env
+.DS_Store
+__pycache__/
