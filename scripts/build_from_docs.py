@@ -240,8 +240,8 @@ def records():
         ("Phone follow-up", "Customer called about the wrong size. Exchange being arranged.", "TKT-0004"),
         ("Phone follow-up", "QA test note.", "TKT-QA-002"),
     ]:
-        if find("notes", f'title[eq]:"{title}"') and ref == "TKT-QA-002":
-            continue
+        if find("noteTargets", f'targetTicketId[eq]:"{tickets[ref]}"'):
+            continue  # this ticket already has its note
         nid = call("POST", "/rest/notes", {"title": title, "bodyV2": {"markdown": body_md}})["data"]["createNote"]["id"]
         call("POST", "/rest/noteTargets", {"noteId": nid, "targetTicketId": tickets[ref]})
     print("notes: 2")
