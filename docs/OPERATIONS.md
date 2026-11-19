@@ -51,6 +51,10 @@ The first file is the whole database, the second the uploaded files. Copy them o
 A backup also needs `.env` (same `APP_SECRET` and `ENCRYPTION_KEY`) to be useful: keep a copy of `.env` in a
 password manager.
 
+**Undo points kept from the 19 Nov 2026 switch to Aroosh's exact data:** the Google Cloud snapshot
+`pre-plana-aroosh-20261119-1205` and the backup folder `~/pre-import-20261119-1203` on the server (the earlier
+rebuilt copy). They can be deleted once everyone is happy with the live copy.
+
 **Planned:** a nightly backup like the one above, encrypted and copied to Google Drive, plus a daily snapshot of the
 whole server disk kept for 7 days (one command on Google Cloud). Both are already running for Rishi's other CRM.
 
@@ -68,7 +72,7 @@ docker compose --env-file .env exec -T server tar -C /app/packages/twenty-server
 
 1. Make a backup (section 3).
 2. Read Twenty's release notes for the new version (https://github.com/twentyhq/twenty/releases).
-3. In `.env`, change `TAG=v2.59.2` to the new version, for example `TAG=v2.60.0`.
+3. In `.env`, change `TAG=v2.51.0` (today's version, same as Aroosh's laptop) to the new one, for example `TAG=v2.59.2`.
 4. `docker compose --env-file .env pull && docker compose --env-file .env up -d`
 5. Wait until `server` is **(healthy)** (database upgrades can take a few minutes), then log in and check.
 

@@ -10,7 +10,7 @@ There are two ways to fill the CRM with data. Steps 1 to 3 are the same for both
 | Result | An **exact copy** of Aroosh's CRM: every record, her users, passwords and API keys | The same structure and the sample records written in her documents; new users and keys |
 | Needs | The file `data/twenty-export-<date>.enc` and its passphrase | An Admin account and an API key on the new CRM |
 | Time | About 10 minutes | About 15 minutes |
-| Used for the live copy? | Not yet (waiting for the export) | **Yes** |
+| Used for the live copy? | **Yes** (since 19 Nov 2026) | Earlier the same day, then replaced by Way A |
 
 ---
 

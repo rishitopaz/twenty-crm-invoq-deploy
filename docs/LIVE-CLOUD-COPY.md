@@ -1,10 +1,10 @@
 # The live cloud CRM: what is on it
 
 **Address:** https://crm.34-18-187-167.sslip.io
-**State on:** 19 November 2026
+**State on:** 19 November 2026, 12:20 UTC
 
-This page says exactly what is on the live CRM, where each part came from, and what is still missing.
-It is honest about guesses: where Aroosh's documents did not give a value, the value used is marked **(assumed)**.
+The live CRM is an **exact copy of Aroosh's laptop CRM** as she exported it on 19 November 2026 at 10:14 UTC:
+every record, her users and passwords, roles, workflows, API keys and the connected mailbox.
 
 ---
 
@@ -14,75 +14,90 @@ It is honest about guesses: where Aroosh's documents did not give a value, the v
 |---|---|
 | Provider | Google Cloud, region me-central1 (Doha), zone me-central1-a |
 | Server name | `aroosh-crm` |
-| Size | e2-medium: 2 processors, 4 GB memory (+2 GB swap), 40 GB disk (30 GB free) |
+| Size | e2-medium: 2 processors, 4 GB memory (+2 GB swap), 40 GB disk (29 GB free) |
 | Operating system | Ubuntu 24.04.5 LTS, automatic security updates on |
 | Fixed IP address | 34.18.187.167 (reserved as `aroosh-crm-ip`, so it never changes) |
 | Firewall | Google Cloud: only ports 80 and 443 from the internet, SSH only through Google's secure tunnel (IAP). Server firewall (ufw): SSH, 80, 443 |
-| Twenty version | **v2.59.2** (pinned; it changes only when someone upgrades on purpose) |
+| Twenty version | **v2.51.0**, the same version and the same build as Aroosh's laptop (pinned; it changes only when someone upgrades on purpose) |
 | Other programs | PostgreSQL 16 (database), Redis 7 (queues), Caddy 2 (HTTPS) |
 | HTTPS certificate | Let's Encrypt, issued and renewed automatically by Caddy |
-| Database size | 27 MB |
-| Public sign-up | **Off**: people join only with an invite link |
+| Database size | 26 MB |
+| Public sign-up | **Off**: people join only with an invite link (Invite by link is currently off too) |
 | Separate from | Rishi's own Real Estate CRM (`twenty-crm`, another server). The two share nothing |
 
-## 2. How the content was made
+## 2. How the content got there
 
-Aroosh's CRM runs on her MacBook. Its database (every record, user and setting) has not been exported yet, so the
-cloud copy was **rebuilt from her two documents** (in `docs/aroosh/`) with `scripts/build_from_docs.py`.
-When her export file arrives, `scripts/import-export.sh` replaces everything with her exact data (see
-[DEPLOYMENT.md](../DEPLOYMENT.md), Way A).
+1. Aroosh ran `scripts/export-from-laptop.sh` on her Mac. It made one encrypted file,
+   `twenty-export-20261119-1414.enc` (36 MB), with her database, uploaded files, settings and version.
+2. On the server, `scripts/import-export.sh` opened the file and loaded it ([DEPLOYMENT.md](../DEPLOYMENT.md), Way A).
+3. The check at the end compared all 45 data tables with the counts taken on her laptop: **DATA IDENTICAL**.
+4. A second, separate check counted the records one type at a time (table below): all match.
 
-## 3. Data model (same as her documents)
+Before this, the live copy had been rebuilt from her documents (Way B). That version was replaced. It is kept
+as a backup on the server and as a Google Cloud disk snapshot (see [OPERATIONS.md](OPERATIONS.md)).
 
-| Object | Fields | Links |
+## 3. Records (checked on the live CRM after the import)
+
+| Type | On Aroosh's laptop | On the cloud |
 |---|---|---|
-| **People** (built-in) + retail fields | Loyalty ID; Customer Type (Retail, Wholesale, VIP); Preferred Channel (Phone, Email, Chat, SMS, Store) **(options assumed: her docs only say "contact channel options")** | Company |
-| **Companies** (built-in) | standard fields | |
-| **Tickets** (Retail) | Reference Number; Status (Open, In Progress, Resolved, Closed); Priority (Low, Medium, High, Urgent); Category (Order Issue, Return / Refund, Delivery, Product Inquiry, Complaint); Channel (Phone, Email, Chat, Store); Order Number; Description; Team (Support, Billing, Logistics, Escalations); First Response Due; Resolution Due; SLA Status (On Track, At Risk, Breached) | Contact (person), Account (company), Assignee (member), Interactions |
-| **Service Requests** (generic, any industry) | Reference Number; Sector (Retail, Health, Real Estate, Banking, Government); Category (free text); Sub Category (free text); Description; Status; Priority; Channel (Phone, Email, Chat, SMS, Web, In Person); External Reference; First Response Due; Resolution Due; SLA Status | Contact, Account, Assignee, Interactions |
-| **Catalog Entries** | Name; Sector; Category; Sub Category | stands alone: the lists for dependent dropdowns |
-| **Interactions** | Type (`interactionType` in the API: Call, Email, Chat, SMS); Direction (Inbound, Outbound); Occurred At; Duration Seconds; Summary; Outcome (Resolved, Follow-up Needed, Escalated) | Ticket, Service Request, Contact, Handled By (member) |
+| Tickets | 18 | 18 |
+| Service Requests | 12 | 12 |
+| People | 14 | 14 |
+| Companies | 3 (Urban Wear Boutique, Simra's Bookstore, Notion) | 3 |
+| Catalog Entries | 20 | 20 |
+| Interactions | 12 | 12 |
+| Notes | 9 | 9 |
+| Workflows | 6 | 6 |
+| API keys | 3 (2 active) | 3 (2 active) |
+| Users | 3 | 3 |
 
-The API names and values are the ones in her API guide (for example `referenceNumber`, `ORDER_ISSUE`,
-`serviceRequests`, `catalogEntries`), so her `curl` examples work unchanged against the live address.
+## 4. People and roles
 
-## 4. Records
-
-| Type | Count | Records |
+| Person | Role | How they log in |
 |---|---|---|
-| Company | 1 (+6 automatic) | Urban Wear Boutique. Twenty adds 5 sample companies to every new workspace (Airbnb, Anthropic, Figma, Notion, Stripe), as on her laptop, and its built-in automation "Create company when adding a new person" made one called `example.com` from the contacts' email addresses. The extra ones can be deleted |
-| People | 7 (+5 Twenty samples: Brian Chesky, Dario Amodei, Dylan Field, Ivan Zhao, Patrick Collison) | Fatima Khan (LOY-1002, phone 501112222), Yumna Khan, Lena Tanzil, Noor Saleh (LOY-1004, Store Manager, VIP), Ally Jayne (LOY-1005), Sam Rivers (LOY-1006, 506665555), QA PermissionTest. Her docs give no email or loyalty ID for Yumna and Lena, so those are empty |
-| Tickets | 14 | TKT-0001 to TKT-0006 (her sample tickets, all linked to their contact and Urban Wear Boutique), TKT-0007, TKT-0013, TKT-0014, TKT-0015, TKT-0016, TKT-0020 (SLA breached), TKT-0030, TKT-QA-002 |
-| Notes | 2 | "Phone follow-up" on TKT-0004 and on TKT-QA-002 |
-| Catalog Entries | 20 | All 20 from her documents, exact (5 sectors × 2 categories × 2 sub-categories) |
-| Service Requests | 4 | SR-0001 (Banking, exact payload from her docs), SR-0002 (Retail, Noor Saleh, Urban Wear Boutique), SR-0003 (Banking, Urgent), "testing record 1" (Health) |
-| Interactions | 12 | The 8 on TKT-0001 to TKT-0006, "Test call" on TKT-0030, and 3 on SR-0001 and SR-0002 |
-| Roles | 4 for people | Admin and Member (come with Twenty), **Agent** (see and edit, no delete), **Supervisor** (see, edit and delete). The list also shows Twenty's two system roles, "Standard role" and "Workspace Custom Application": leave them alone |
+| Aroosh Ahmed | Admin | Her usual email and password from her laptop CRM |
+| Umaima Suleman | Supervisor | The email and password she used on Aroosh's laptop CRM (not a password made on the earlier cloud copy) |
+| Test Agent | Agent | Aroosh's test account |
 
-**Assumed values** (her documents did not state them; they follow her own patterns):
-- Ticket categories of TKT-0001 to TKT-0006 (Order Issue, Return / Refund, Delivery), and order numbers ORD-5001, ORD-5003 to ORD-5005.
-- The titles of TKT-0014, TKT-0015, TKT-0016 ("Workflow test: high / low / urgent priority").
-- SR-0003's title and category ("Card blocked abroad", Cards / Card blocked); the reference `SR-0000` for "testing record 1".
-- Dates, durations and summaries of the interactions, except "Wrong size call" (exact from her API guide).
-- Note texts.
+Roles in the workspace: Admin, Member, Agent, Supervisor, API Integration, External API access (plus Twenty's
+system role "Workspace Custom Application": leave it alone).
 
-## 5. Not on the live copy yet
+**Forgotten password:** "Forgot password" needs the server to send email, which is not set up. Aroosh (Admin)
+removes and re-invites the person instead.
 
-| Missing | Why | How it gets fixed |
+## 5. Automations (workflows)
+
+| Workflow | When it runs | What it does |
 |---|---|---|
-| About 6 tickets and some test records | Her documents mention "about 20 tickets" but describe only these 14 | Her export file |
-| Her and her test agent's original logins, her API keys (including Umaima's earlier key) | Passwords and keys live only in her database | Her export file. Until then: new invites and new keys |
-| Workflows: "High priority ticket email", "High priority service request email", "SLA breach escalation" | They send emails, and no mailbox is connected yet | Connect a mailbox (Settings → Accounts), then rebuild them, or her export file (it contains them) |
-| Mailbox (test Gmail) | Needs the Gmail app password, which only Aroosh has | Aroosh connects it herself, or her export file |
-| Role "API Integration" (limited key for INVOQ) | Its object-by-object rules are set in the screen | Her export file, or set it up in Settings → Roles (her history doc, section 23) |
-| Assignee / Handled By on records | Those point to people who are members; Aroosh had not joined yet | Set them in the screen, or her export file |
-| Iframe embedding for INVOQ | Waiting for INVOQ's agent-screen address | Settings → General → Security → Iframe embedding |
-| Automatic backups | Not set up yet | Planned next (see [OPERATIONS.md](OPERATIONS.md), "Backups") |
+| SLA breach escalation | Every 15 minutes | Finds open tickets past their resolution deadline that are still On Track or At Risk, marks them Breached, emails one alert each |
+| SLA breach escalation (service requests) | Every 15 minutes | The same for service requests |
+| High priority ticket email | When a ticket is created with High or Urgent priority | Emails an alert |
+| High priority service request email | When a service request is created with High or Urgent priority | Emails an alert |
+| Create company when adding a new person | When a person is created | Twenty's built-in automation |
+| Quick Lead | By hand | Twenty's built-in automation |
 
-## 6. People with access (19 Nov 2026)
+The alert emails go out through her connected mailbox (IMAP/SMTP), which works on the cloud too. First cloud run
+at 12:15 UTC: completed, nothing to alert about (the only open records past their deadline, TKT-0020 and SR-0004,
+were already Breached), 0 emails sent.
 
-| Person | Role |
+**Two copies for now:** Aroosh's laptop CRM still exists. A ticket created on one copy does not appear on the
+other, and only the copy where it was created sends its alert. From now on, use the cloud address for real work.
+
+## 6. API keys
+
+| Key | Expires |
 |---|---|
-| Rishi Upadhyay | Admin (created the workspace) |
-| Umaima Suleman | Supervisor |
-| Aroosh Ahmed | Admin once she joins (she keeps building the CRM here) |
+| Retail CRM | 4 October 2126 |
+| Umaima external | **21 November 2026**: create a new key before then if it is still used (Settings → APIs & Webhooks) |
+
+Keys made on her laptop work unchanged on the cloud: same keys, only the address changes from
+`http://localhost:3000` to `https://crm.34-18-187-167.sslip.io`.
+
+## 7. Not done yet
+
+| Item | Note |
+|---|---|
+| Automatic backups | Manual backups and snapshots only, so far ([OPERATIONS.md](OPERATIONS.md), "Backups") |
+| Server email (password reset, invitations by email) | Invite by link works without it |
+| Two-step login (2FA) | 0 users use it |
+| Iframe embedding for INVOQ | Waiting for INVOQ's agent-screen address (Settings → General → Security → Iframe embedding) |

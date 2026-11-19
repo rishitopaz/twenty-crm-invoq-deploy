@@ -28,13 +28,10 @@ switched off, so strangers cannot make accounts. After joining, everyone uses th
 | Part | Status |
 |---|---|
 | CRM running on Google Cloud with HTTPS (padlock in the browser) | **Done** |
-| Data model: Tickets, Service Requests, Interactions, Catalog Entries, retail fields on People | **Done**, rebuilt from Aroosh's documents |
-| Sample records (tickets, service requests, interactions, the 20 catalog entries) | **Done**, rebuilt from her documents |
-| Roles: Admin, Member, Agent, Supervisor | **Done** |
-| Umaima's login | **Done** (Supervisor) |
-| Aroosh's **exact** laptop data (every record, her original users and API keys) | **Waiting** for Aroosh to run one export script (about 5 minutes) |
-| Email automations (High-priority alert, SLA breach alert) | **Not yet**. They need a mailbox connected in the CRM |
-| Automatic backups of the cloud server | **Not yet**. Planned next |
+| Aroosh's **exact** laptop data: every record, users, roles, workflows, API keys, mailbox | **Done** (19 Nov 2026), checked identical |
+| Logins | Aroosh (Admin), Umaima (Supervisor), Test Agent: same email and password as on Aroosh's laptop |
+| Email automations (High-priority alert, SLA breach alert) | **Running** on the cloud, through her connected mailbox |
+| Automatic backups of the cloud server | **Not yet**. Manual backups and snapshots only |
 
 Full detail of what is live and what is missing: [docs/LIVE-CLOUD-COPY.md](docs/LIVE-CLOUD-COPY.md).
 
@@ -71,24 +68,24 @@ name, so we get a real HTTPS certificate without buying a domain. A company doma
 |---|---|
 | `README.md` | This page |
 | [`DEPLOYMENT.md`](DEPLOYMENT.md) | **How to deploy the CRM on a new server**, step by step |
-| [`docs/LIVE-CLOUD-COPY.md`](docs/LIVE-CLOUD-COPY.md) | What exactly is on the live cloud CRM, what was rebuilt, what is missing |
+| [`docs/LIVE-CLOUD-COPY.md`](docs/LIVE-CLOUD-COPY.md) | What exactly is on the live cloud CRM, who can log in, what is not done yet |
 | [`docs/OPERATIONS.md`](docs/OPERATIONS.md) | Day-to-day: add people, start/stop, backups, upgrades, own domain, costs, fixing problems |
 | `docs/aroosh/` | Aroosh's own documents: the project history and the API guide (how to call the CRM from other software) |
 | `docker-compose.yml` | The list of the five programs and how they connect |
 | `Caddyfile` | The HTTPS settings |
 | `.env.example` | The settings template (the real `.env` holds passwords and is never put in GitHub) |
 | `scripts/setup-ubuntu.sh` | Prepares an empty Ubuntu server: Docker, firewall, security updates |
-| `scripts/import-export.sh` | Deploys the CRM **with Aroosh's exact data** from an export file |
-| `scripts/build_from_docs.py` | Builds the CRM structure and sample records **from Aroosh's documents** (used for today's live copy) |
+| `scripts/import-export.sh` | Deploys the CRM **with Aroosh's exact data** from an export file (used for the live copy) |
+| `scripts/build_from_docs.py` | Builds the CRM structure and sample records **from Aroosh's documents** (the fallback, Way B) |
 | `scripts/export-from-laptop.sh` | What Aroosh runs on her Mac to make the export file |
-| `data/` | Where the encrypted export file goes (empty until Aroosh sends it) |
+| `data/` | Where the encrypted export file goes. It is not in GitHub: ask Rishi for the file and, separately, its passphrase |
 
 ---
 
 ## 5. Common questions
 
-**Is there a size limit?** Not in practice. The server has a 40 GB disk with 30 GB free; today's CRM data uses
-27 MB. Hundreds of thousands of records fit. The disk can be enlarged in minutes if ever needed.
+**Is there a size limit?** Not in practice. The server has a 40 GB disk with 29 GB free; today's CRM data uses
+26 MB. Hundreds of thousands of records fit. The disk can be enlarged in minutes if ever needed.
 
 **What does it cost?** About **USD 30 to 35 per month** for this server on Google Cloud (2 processors, 4 GB memory,
 40 GB disk, fixed IP address). It currently runs on the Google Cloud trial credit. Check the trial's end date in
@@ -99,7 +96,7 @@ Any Ubuntu server with 2 processors, 4 GB memory and 30 GB disk works. Internet 
 programs; HTTPS needs a name that points to the server.
 
 **Can INVOQ or other software use it?** Yes, through the REST API: `https://crm.34-18-187-167.sslip.io/rest/...`
-with an API key (Settings → APIs & Webhooks). Every example in `docs/aroosh/twenty-crm-retail-api.md` works; only
+with an API key (Settings → APIs & Webhooks). Aroosh's existing keys work unchanged. Every example in `docs/aroosh/twenty-crm-retail-api.md` works; only
 replace `http://localhost:3000` with the live address.
 
 **Can it be shown inside INVOQ (screen pop / iframe)?** Yes. An Admin adds INVOQ's address under
