@@ -32,7 +32,12 @@ ver="${TAG:-$ver}"; [ -n "$ver" ] || fail "cannot tell the Twenty version from v
 case "$ver" in v*) ;; *) ver="v$ver" ;; esac
 
 echo "== 2/5 write .env (values not shown)"
-host="${2:-}"
+# Re-run on a server that already has a database (FORCE=1): Postgres keeps the password it was created with,
+# so reuse it (and the hostname and sign-up setting), or Twenty could not log in to its own database.
+old() { [ -f .env ] && grep -E "^$1=" .env | tail -1 | cut -d= -f2- || true; }
+pgpass=$(old PG_DATABASE_PASSWORD); [ -n "$pgpass" ] || pgpass=$(openssl rand -hex 24)
+signup=$(old IS_SIGN_UP_DISABLED); [ -n "$signup" ] || signup=true
+host="${2:-$(old CRM_HOST)}"
 if [ -z "$host" ]; then
   ip=$(curl -s -m 5 -H 'Metadata-Flavor: Google' http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip || true)
   [ -n "$ip" ] || ip=$(curl -s -m 5 https://api.ipify.org || true)
@@ -43,11 +48,13 @@ umask 077
 cat > .env <<EOF
 CRM_HOST=$host
 TAG=$ver
-PG_DATABASE_PASSWORD=$(openssl rand -hex 24)
+PG_DATABASE_PASSWORD=$pgpass
 APP_SECRET=$(sec APP_SECRET)
 ENCRYPTION_KEY=$(sec ENCRYPTION_KEY)
 FALLBACK_ENCRYPTION_KEY=$(sec FALLBACK_ENCRYPTION_KEY)
+IS_SIGN_UP_DISABLED=$signup
 EOF
+unset pgpass
 umask 022
 [ -n "$(sec ENCRYPTION_KEY)" ] || fail "ENCRYPTION_KEY is empty in the export"
 echo "hostname: $host   version: $ver"
@@ -57,7 +64,9 @@ $dc pull -q
 want=$(grep -E '^image_digest=' import/version.txt | cut -d= -f2- | grep -o 'sha256:[0-9a-f]*' | head -1 || true)
 have=$(docker image inspect -f '{{join .RepoDigests " "}}' "twentycrm/twenty:$ver" | grep -o 'sha256:[0-9a-f]*' | head -1 || true)
 if [ -n "$want" ] && [ "$want" != "$have" ]; then echo "WARNING: image digest differs from the laptop ($want vs $have): same tag, different build"; fi
-$dc up -d --wait db
+$dc stop server worker >/dev/null 2>&1 || true   # nothing may write to the database while it is replaced
+$dc up -d --wait db redis
+$dc exec -T redis redis-cli FLUSHALL >/dev/null    # old cache and queued jobs belong to the old data
 $dc exec -T db psql -U postgres -d postgres -v ON_ERROR_STOP=1 -q -c 'DROP DATABASE IF EXISTS "default" WITH (FORCE)' -c 'CREATE DATABASE "default"'
 gzip -dc import/twenty-db.sql.gz | $dc exec -T db psql -U postgres -d default -v ON_ERROR_STOP=1 -q -o /dev/null
 echo "database loaded"
