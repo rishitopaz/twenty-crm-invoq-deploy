@@ -3,8 +3,8 @@
 This repository puts **Aroosh Ahmed's Twenty CRM** (Retail tickets + the generic Service Request module for INVOQ)
 on a cloud server with a real web address, and lets anyone at Topaz deploy the same CRM on their own server.
 
-- **Built by (the CRM):** Aroosh Ahmed. She designs and configures the CRM.
-- **Deployed by (this repo):** Rishi Upadhyay. He puts it on servers and keeps it running.
+- **Built by (the CRM):** Aroosh Ahmed. Designs and configures the CRM.
+- **Deployed by (this repo):** Rishi Upadhyay. Deploy it on servers and keeps it running.
 - **For:** Umaima Suleman (team lead).
 - **Last updated:** 19 November 2026.
 
