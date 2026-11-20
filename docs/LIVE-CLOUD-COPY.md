@@ -1,10 +1,11 @@
 # The live cloud CRM: what is on it
 
 **Address:** https://crm.34-18-187-167.sslip.io
-**State on:** 19 November 2026, 12:20 UTC
+**State on:** 20 November 2026, 10:14 UTC
 
-The live CRM is an **exact copy of Aroosh's laptop CRM** as she exported it on 19 November 2026 at 10:14 UTC:
+The live CRM started as an **exact copy of Aroosh's laptop CRM** as she exported it on 19 November 2026 at 10:14 UTC:
 every record, her users and passwords, roles, workflows, API keys and the connected mailbox.
+**Since then people have worked on the cloud copy, so it now has more records than the laptop** (section 3).
 
 ---
 
@@ -33,6 +34,10 @@ every record, her users and passwords, roles, workflows, API keys and the connec
 3. The check at the end compared all 45 data tables with the counts taken on her laptop: **DATA IDENTICAL**.
 4. A second, separate check counted the records one type at a time (table below): all match.
 
+5. On 20 November 2026 (10:12 UTC) an encrypted copy of the **live cloud data** was made and stored in this
+   repository (`data/twenty-export-20261120-1412.enc`). It has the same layout as Aroosh's export, so
+   `scripts/import-export.sh` loads it ([DEPLOYMENT.md](../DEPLOYMENT.md), Way A). Only Rishi has its passphrase.
+
 Before this, the live copy had been rebuilt from her documents (Way B). That version was replaced. It is kept
 as a backup on the server and as a Google Cloud disk snapshot (see [OPERATIONS.md](OPERATIONS.md)).
 
@@ -50,6 +55,22 @@ as a backup on the server and as a Google Cloud disk snapshot (see [OPERATIONS.m
 | Workflows | 6 | 6 |
 | API keys | 3 (2 active) | 3 (2 active) |
 | Users | 3 | 3 |
+
+**Since the import (counted on the live CRM, 20 November 2026, 10:14 UTC):** new records were added on the cloud.
+
+| Type | Right after import (19 Nov) | Now (20 Nov) |
+|---|---|---|
+| Tickets | 18 | 19 |
+| Service Requests | 12 | 18 |
+| People | 14 | 17 |
+| Companies | 3 | 7 |
+| Catalog Entries | 20 | 22 |
+| Interactions | 12 | 12 |
+| Notes | 9 | 9 |
+| Workflows | 6 | 6 |
+| Users (people who can log in) | 3 | 4 (Rishi was added as a Member) |
+
+**Do not reload an older export over the live CRM:** it would erase these new records.
 
 ## 4. People and roles
 
@@ -81,7 +102,8 @@ at 12:15 UTC: completed, nothing to alert about (the only open records past thei
 were already Breached), 0 emails sent.
 
 **Two copies for now:** Aroosh's laptop CRM still exists. A ticket created on one copy does not appear on the
-other, and only the copy where it was created sends its alert. From now on, use the cloud address for real work.
+other, and only the copy where it was created sends its alert. The cloud copy is the working one (it holds newer
+records than the laptop): use the cloud address for real work.
 
 ## 6. API keys
 
