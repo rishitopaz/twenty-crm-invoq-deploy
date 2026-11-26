@@ -6,7 +6,7 @@ on a cloud server with a real web address, and lets anyone at Topaz deploy the s
 - **Built by (the CRM):** Aroosh Ahmed. Designs and configures the CRM.
 - **Deployed by (this repo):** Rishi Upadhyay. Deploy it on servers and keeps it running.
 - **For:** Umaima Suleman (team lead).
-- **Last updated:** 20 November 2026.
+- **Last updated:** 25 November 2026.
 
 ---
 
@@ -32,7 +32,7 @@ switched off, so strangers cannot make accounts. After joining, everyone uses th
 | Encrypted copy of the live data in this repository (`data/`) | **Done** (20 Nov 2026, 10:12 UTC). Passphrase: only Rishi has it |
 | Logins | Aroosh (Admin), Umaima (Supervisor), Test Agent: same email and password as on Aroosh's laptop |
 | Email automations (High-priority alert, SLA breach alert) | **Running** on the cloud, through her connected mailbox |
-| Automatic backups of the cloud server | **Not yet**. Manual backups and snapshots only |
+| Automatic backups of the cloud server | **Done** (25 Nov 2026): nightly database + files backup kept 7 days, and a daily disk snapshot kept 7 days. No copy off the server yet |
 
 Full detail of what is live and what is missing: [docs/LIVE-CLOUD-COPY.md](docs/LIVE-CLOUD-COPY.md).
 
@@ -78,6 +78,7 @@ name, so we get a real HTTPS certificate without buying a domain. A company doma
 | `scripts/setup-ubuntu.sh` | Prepares an empty Ubuntu server: Docker, firewall, security updates |
 | `scripts/import-export.sh` | Deploys the CRM **with Aroosh's exact data** from an export file (used for the live copy) |
 | `scripts/build_from_docs.py` | Builds the CRM structure and sample records **from Aroosh's documents** (the fallback, Way B) |
+| `scripts/backup-nightly.sh` | The nightly backup of the database and uploaded files (runs from cron on the live server) |
 | `scripts/export-from-laptop.sh` | What Aroosh runs on her Mac to make the export file |
 | `data/` | The encrypted copy of the live CRM data: `twenty-export-20261120-1412.enc` (about 70 MB, made from the live server on 20 Nov 2026). Ask Rishi for the passphrase, never in the same message as anything else about it |
 

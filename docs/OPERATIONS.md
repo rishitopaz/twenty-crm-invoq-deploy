@@ -38,7 +38,19 @@ The programs restart by themselves after a crash or a server reboot (`restart: a
 
 ## 3. Backups
 
-**Today:** no automatic backup yet (planned next). Make one by hand before any change:
+**Automatic, since 25 November 2026:**
+- **Every night at 03:30 UTC** `scripts/backup-nightly.sh` saves the database and the uploaded files into `~/backups/` on
+  the server (files `crm-<date>.sql.gz` and `files-<date>.tgz`, private, last 7 days kept). It checks each file is complete
+  before keeping it and never replaces a good backup with a broken one. A failure prints `BACKUP FAILED` in `~/backup.log`.
+  Is it alive? `cat ~/backups/LAST-OK` shows the time of the last good backup (a date older than 1 day means it stopped).
+- **Every day at 23:00 UTC** Google Cloud takes a snapshot of the whole server disk and keeps 7
+  (schedule `aroosh-daily`; list them: `gcloud compute snapshots list --filter="sourceDisk~aroosh-crm"`). Cost: well under
+  USD 1 a month.
+- Tested on 25 November 2026: a backup was made by hand, loaded into a scratch database and gave the same users and tickets
+  as the live CRM (4 users, 19 tickets). Not tested: restoring a whole disk from one of these snapshots on this server.
+- Not done: a copy of the backups **off** the server (Google Drive). The snapshots are the second copy for now.
+
+**Make one by hand** before any change (the nightly script does the same: run `scripts/backup-nightly.sh`):
 
 ```bash
 mkdir -p backups
@@ -55,8 +67,7 @@ password manager.
 `pre-plana-aroosh-20261119-1205` and the backup folder `~/pre-import-20261119-1203` on the server (the earlier
 rebuilt copy). They can be deleted once everyone is happy with the live copy.
 
-**Planned:** a nightly backup like the one above, encrypted and copied to Google Drive, plus a daily snapshot of the
-whole server disk kept for 7 days (one command on Google Cloud). Both are already running for Rishi's other CRM.
+**Planned:** copy the nightly backup, encrypted, to Google Drive as well (already running for Rishi's other CRM).
 
 **Restore a backup** (replaces everything that is in the CRM now):
 

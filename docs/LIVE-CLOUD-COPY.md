@@ -37,6 +37,9 @@ every record, her users and passwords, roles, workflows, API keys and the connec
 5. On 20 November 2026 (10:12 UTC) an encrypted copy of the **live cloud data** was made and stored in this
    repository (`data/twenty-export-20261120-1412.enc`). It has the same layout as Aroosh's export, so
    `scripts/import-export.sh` loads it ([DEPLOYMENT.md](../DEPLOYMENT.md), Way A). Only Rishi has its passphrase.
+   **Restore-tested on 26 November 2026:** the file opened with its passphrase, and its database loaded into a scratch
+   PostgreSQL with all 120 tables row-for-row identical to the list saved inside the file. The full Twenty application
+   was not started from it in that test (the same method did that for Aroosh's first export on 19 Nov).
 
 Before this, the live copy had been rebuilt from her documents (Way B). That version was replaced. It is kept
 as a backup on the server and as a Google Cloud disk snapshot (see [OPERATIONS.md](OPERATIONS.md)).
@@ -110,7 +113,7 @@ records than the laptop): use the cloud address for real work.
 | Key | Expires |
 |---|---|
 | Retail CRM | 4 October 2126 |
-| Umaima external | **21 November 2026**: create a new key before then if it is still used (Settings → APIs & Webhooks) |
+| Umaima external | **Expired on 21 November 2026** (checked 25 Nov). Nothing is known to use it. If something does, create a new key (Settings → APIs & Webhooks) |
 
 Keys made on her laptop work unchanged on the cloud: same keys, only the address changes from
 `http://localhost:3000` to `https://crm.34-18-187-167.sslip.io`.
@@ -119,7 +122,7 @@ Keys made on her laptop work unchanged on the cloud: same keys, only the address
 
 | Item | Note |
 |---|---|
-| Automatic backups | Manual backups and snapshots only, so far ([OPERATIONS.md](OPERATIONS.md), "Backups") |
+| Backup copy **off** the server (Google Drive) | The nightly backup and the daily disk snapshot exist since 25 Nov 2026 ([OPERATIONS.md](OPERATIONS.md), "Backups"); a Drive copy is still to do |
 | Server email (password reset, invitations by email) | Invite by link works without it |
 | Two-step login (2FA) | 0 users use it |
 | Iframe embedding for INVOQ | Waiting for INVOQ's agent-screen address (Settings → General → Security → Iframe embedding) |
