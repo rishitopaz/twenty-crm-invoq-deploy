@@ -16,14 +16,14 @@ mailbox synced 22 emails. On 26 Nov Aroosh also said her own copy has no work af
 |---|---|
 | Provider | Google Cloud, region me-central1 (Doha), zone me-central1-a |
 | Server name | `aroosh-crm` |
-| Size | e2-medium: 2 processors, 4 GB memory (+2 GB swap), 40 GB disk (29 GB free) |
+| Size | e2-medium: 2 processors, 4 GB memory (+2 GB swap), 40 GB disk (26 GB free on 26 Nov 2026) |
 | Operating system | Ubuntu 24.04.5 LTS, automatic security updates on |
 | Fixed IP address | 34.18.187.167 (reserved as `aroosh-crm-ip`, so it never changes) |
 | Firewall | Google Cloud: only ports 80 and 443 from the internet, SSH only through Google's secure tunnel (IAP). Server firewall (ufw): SSH, 80, 443 |
 | Twenty version | **v2.59.3** since 26 Nov 2026 (upgraded from v2.51.0, Aroosh's laptop version, at her request; pinned, it changes only when someone upgrades on purpose). Undo points: snapshot `pre-upgrade-aroosh-v2-59-3-20261126-0611`, backup `~/backups/crm-20261126-0610.sql.gz`, old settings `~/env.before-2.59.3` |
 | Other programs | PostgreSQL 16 (database), Redis 7 (queues), Caddy 2 (HTTPS) |
 | HTTPS certificate | Let's Encrypt, issued and renewed automatically by Caddy |
-| Database size | 26 MB |
+| Database size | 39 MB (26 Nov 2026) |
 | Public sign-up | **Off**: people join only with an invite link (Invite by link is currently off too) |
 | Separate from | Rishi's own Real Estate CRM (`twenty-crm`, another server). The two share nothing |
 
@@ -88,6 +88,7 @@ stored. Counting only live records, nothing grew. The database also holds delete
 | Aroosh Ahmed | Admin | Her usual email and password from her laptop CRM |
 | Umaima Suleman | Supervisor | The email and password she used on Aroosh's laptop CRM (not a password made on the earlier cloud copy) |
 | Test Agent | Agent | Aroosh's test account |
+| Rishi Upadhyay | Member | Joined by invite link on 19 Nov 2026. A Member cannot change settings or create API keys |
 
 Roles in the workspace: Admin, Member, Agent, Supervisor, API Integration, External API access (plus Twenty's
 system role "Workspace Custom Application": leave it alone).
@@ -111,8 +112,8 @@ at 12:15 UTC: completed, nothing to alert about (the only open records past thei
 were already Breached), 0 emails sent.
 
 **Two copies for now:** Aroosh's laptop CRM still exists. A ticket created on one copy does not appear on the
-other, and only the copy where it was created sends its alert. The cloud copy is the working one (it holds newer
-records than the laptop): use the cloud address for real work.
+other, and only the copy where it was created sends its alert. Since 19 Nov only one new ticket was made, on the
+cloud. Use the cloud address for real work.
 
 ## 6. API keys
 
@@ -121,8 +122,9 @@ records than the laptop): use the cloud address for real work.
 | Retail CRM | 4 October 2126 |
 | Umaima external | **Expired on 21 November 2026** (checked 25 Nov). Nothing is known to use it. If something does, create a new key (Settings → APIs & Webhooks) |
 
-Keys made on her laptop work unchanged on the cloud: same keys, only the address changes from
-`http://localhost:3000` to `https://crm.34-18-187-167.sslip.io`.
+Keys made on her laptop came over with her data (same keys; only the address changes from `http://localhost:3000` to
+`https://crm.34-18-187-167.sslip.io`). They were not re-tested after the 26 Nov 2026 upgrade. Only an Admin can
+create new keys.
 
 ## 7. Not done yet
 
@@ -130,5 +132,5 @@ Keys made on her laptop work unchanged on the cloud: same keys, only the address
 |---|---|
 | Backup copy **off** the server (Google Drive) | The nightly backup and the daily disk snapshot exist since 25 Nov 2026 ([OPERATIONS.md](OPERATIONS.md), "Backups"); a Drive copy is still to do |
 | Server email (password reset, invitations by email) | Invite by link works without it |
-| Two-step login (2FA) | 0 users use it |
+| Two-step login (2FA) | No user has it switched on (one set-up was started and not finished, 26 Nov) |
 | Iframe embedding for INVOQ | Waiting for INVOQ's agent-screen address (Settings → General → Security → Iframe embedding) |

@@ -4,9 +4,12 @@ This repository puts **Aroosh Ahmed's Twenty CRM** (Retail tickets + the generic
 on a cloud server with a real web address, and lets anyone at Topaz deploy the same CRM on their own server.
 
 - **Built by (the CRM):** Aroosh Ahmed. Designs and configures the CRM.
-- **Deployed by (this repo):** Rishi Upadhyay. Deploy it on servers and keeps it running.
+- **Deployed by (this repo):** Rishi Upadhyay. Deploys it on servers and keeps it running.
 - **For:** Umaima Suleman (team lead).
-- **Last updated:** 25 November 2026.
+- **Last updated:** 26 November 2026.
+
+> **This repository is public.** Never commit the `.env` file, API keys, passwords or the export passphrase. The data
+> file in `data/` is encrypted; its passphrase is given only by phone.
 
 ---
 
@@ -16,7 +19,7 @@ on a cloud server with a real web address, and lets anyone at Topaz deploy the s
 |---|---|---|
 | **The live CRM** | https://crm.34-18-187-167.sslip.io | Everyone, every day. This is the normal login page |
 | **This repository** | https://github.com/rishitopaz/twenty-crm-invoq-deploy | Anyone who wants to deploy it on another server |
-| **Aroosh's design repo** | https://github.com/aroosh77/twenty-crm-invoq | Her original files and documents (copies are in `docs/aroosh/`) |
+| **Aroosh's design repo** | https://github.com/aroosh77/twenty-crm-invoq | Her original files. It is **private** (a 404 means no access: ask Aroosh). Copies of her documents are in `docs/aroosh/` |
 
 New people join with an **invite link** that an Admin creates in the CRM (Settings → Members). Public sign-up is
 switched off, so strangers cannot make accounts. After joining, everyone uses the normal link above.
@@ -30,7 +33,7 @@ switched off, so strangers cannot make accounts. After joining, everyone uses th
 | CRM running on Google Cloud with HTTPS (padlock in the browser) | **Done** |
 | Aroosh's **exact** laptop data: every record, users, roles, workflows, API keys, mailbox | **Done** (19 Nov 2026), checked identical |
 | Encrypted copy of the live data in this repository (`data/`) | **Done** (20 Nov 2026, 10:12 UTC). Passphrase: only Rishi has it |
-| Logins | Aroosh (Admin), Umaima (Supervisor), Test Agent: same email and password as on Aroosh's laptop |
+| Logins | Aroosh (Admin), Umaima (Supervisor), Test Agent (Agent): same email and password as on Aroosh's laptop. Rishi (Member) joined by invite on 19 Nov |
 | Email automations (High-priority alert, SLA breach alert) | **Running** on the cloud, through her connected mailbox |
 | Twenty version | **v2.59.3** (upgraded from v2.51.0 on 26 Nov 2026) |
 | Automatic backups of the cloud server | **Done** (25 Nov 2026): nightly database + files backup kept 7 days, and a daily disk snapshot kept 7 days. No copy off the server yet |
@@ -87,26 +90,28 @@ name, so we get a real HTTPS certificate without buying a domain. A company doma
 
 ## 5. Common questions
 
-**Is there a size limit?** Not in practice. The server has a 40 GB disk with 29 GB free; today's CRM data uses
-26 MB. Hundreds of thousands of records fit. The disk can be enlarged in minutes if ever needed.
+**Is there a size limit?** Not in practice. The server has a 40 GB disk with 26 GB free; the CRM database uses
+39 MB (26 Nov 2026). Hundreds of thousands of records fit. The disk can be enlarged in minutes if ever needed.
 
 **What does it cost?** About **USD 30 to 35 per month** for this server on Google Cloud (2 processors, 4 GB memory,
-40 GB disk, fixed IP address). It currently runs on the Google Cloud trial credit. Check the trial's end date in
-the Google Cloud billing page: when a trial ends, servers stop unless billing is switched to a paid account.
+40 GB disk, fixed IP address). It currently runs on the Google Cloud trial credit, which **ends around 15 February
+2027** (82 days left on 25 Nov 2026). When a trial ends, servers stop unless billing is switched to a paid account.
+Google also asks the account owner to **complete account identity verification by 16 March 2027**.
 
 **Can we run it on our own (internal) server instead?** Yes, that is what [DEPLOYMENT.md](DEPLOYMENT.md) is for.
 Any Ubuntu server with 2 processors, 4 GB memory and 30 GB disk works. Internet access is needed to download the
 programs; HTTPS needs a name that points to the server.
 
 **Can INVOQ or other software use it?** Yes, through the REST API: `https://crm.34-18-187-167.sslip.io/rest/...`
-with an API key (Settings → APIs & Webhooks). Aroosh's existing keys work unchanged. Every example in `docs/aroosh/twenty-crm-retail-api.md` works; only
-replace `http://localhost:3000` with the live address.
+with an API key (Settings → APIs & Webhooks; only an Admin can create one). The examples in
+`docs/aroosh/twenty-crm-retail-api.md` use `http://localhost:3000`: replace it with the live address. Aroosh's keys
+came over with her data; they were not re-tested after the 26 Nov 2026 upgrade.
 
 **Can it be shown inside INVOQ (screen pop / iframe)?** Yes. An Admin adds INVOQ's address under
 Settings → General → Security → Iframe embedding.
 
 **Is the data safe?** The connection is encrypted (HTTPS), the database is not reachable from the internet, the
 server firewall only allows web traffic and administrator SSH, and nobody can sign up without an invitation.
-Automatic backups are the next step (see section 2).
+The server backs itself up every night and takes a daily disk snapshot (see section 2).
 
 **Who do I ask?** Rishi for the server and deployment, Aroosh for how the CRM itself is configured.

@@ -123,14 +123,15 @@ The server still needs to download the programs once (Docker Hub). Without that,
 |---|---|---|
 | Free disk | `df -h /` | More than 5 GB free |
 | Memory | `free -h` | Some "available" memory left |
-| Database size | `docker compose --env-file .env exec -T db psql -U postgres -d default -Atc "select pg_size_pretty(pg_database_size('default'))"` | (27 MB on 19 Nov 2026) |
+| Database size | `docker compose --env-file .env exec -T db psql -U postgres -d default -Atc "select pg_size_pretty(pg_database_size('default'))"` | (39 MB on 26 Nov 2026) |
 
 Bigger disk on Google Cloud: `gcloud compute disks resize aroosh-crm --size=80GB --zone=me-central1-a`
 (Ubuntu grows the partition by itself after a reboot).
 
 **Cost** of the live server on Google Cloud: about USD 30 to 35 per month (e2-medium server, 40 GB disk, fixed IP).
-It runs on the Google Cloud trial credit today. Check the trial's end date in the billing page: when a trial ends,
-servers stop unless billing is upgraded to a paid account.
+It runs on the Google Cloud trial credit, which ends around **15 February 2027** (82 days left on 25 Nov 2026): when a
+trial ends, servers stop unless billing is upgraded to a paid account. Google also asks for **account identity
+verification by 16 March 2027**. Both are in the Google Cloud billing page.
 
 ## 8. Fixing common problems
 

@@ -40,15 +40,15 @@ The tag `twenty-web` matches a firewall rule that opens ports 80 and 443.
 
 ## Step 2. Put this repository on the server
 
-The repository is **private**, so the server needs a GitHub login that has access. Easiest options:
+The repository is **public**, so no GitHub login is needed:
 
-- **With the GitHub CLI** (on the server): `sudo apt-get install -y gh`, then `gh auth login` (choose GitHub.com,
-  HTTPS, "Login with a web browser", enter the code it shows on github.com/login/device), then:
-  ```bash
-  gh repo clone rishitopaz/twenty-crm-invoq-deploy
-  ```
-- **Without a login on the server:** on your own computer open the repository page → green **Code** button →
-  **Download ZIP**, copy the ZIP to the server (`scp`), and unzip it.
+```bash
+sudo apt-get install -y git
+git clone https://github.com/rishitopaz/twenty-crm-invoq-deploy.git
+```
+
+No internet on the server? On your own computer open the repository page → green **Code** button → **Download ZIP**,
+copy the ZIP to the server (`scp`), and unzip it.
 
 ## Step 3. Prepare the server (once, about 2 minutes)
 
@@ -65,7 +65,8 @@ switches on automatic security updates, and adds 2 GB of swap on small machines.
 
 ## Step 4A. Way A: deploy Aroosh's exact data (about 10 minutes)
 
-You need the export file in `data/` and its passphrase (ask Rishi or Aroosh; it is never written down in GitHub).
+You need the export file in `data/` and its passphrase. For `data/twenty-export-20261120-1412.enc` only **Rishi** has
+the passphrase; ask him by phone. It is never written down in GitHub.
 
 ```bash
 cd twenty-crm-invoq-deploy
@@ -84,6 +85,11 @@ The script asks for the passphrase and then does everything by itself:
 5. deletes the unencrypted working copy.
 
 The last line shows the address: `LIVE: https://...`. Log in with the same email and password as on Aroosh's CRM.
+
+**Then upgrade to the current version.** The file was made on 20 Nov 2026, when the CRM ran **v2.51.0**, so the import
+starts v2.51.0. The live CRM runs **v2.59.3**. Upgrade the same way the live one was upgraded on 26 Nov 2026:
+[docs/OPERATIONS.md](docs/OPERATIONS.md), section 4 (backup, snapshot, change `TAG` to `v2.59.3`, restart, check). About
+5 minutes.
 
 ## Step 4B. Way B: build from Aroosh's documents (about 15 minutes)
 
