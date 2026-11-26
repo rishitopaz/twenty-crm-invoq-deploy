@@ -40,8 +40,8 @@ workflows, API keys and the connected mailbox.
    no ticket or service request was past its deadline, so no duplicate alert emails.
 5. **26 Nov 2026, 09:07 UTC:** an encrypted copy of the live data was saved in this repository:
    `data/twenty-export-20261126-1305.enc` (about 73 MB, Twenty v2.59.3, so Way A loads it at the current version).
-   Only Rishi has its passphrase (by phone). Checked: it opens with the passphrase and lists all its parts. Not yet
-   restore-tested into a database. The older copy (20 Nov) was removed from the current files; it stays in git history.
+   Only Rishi has its passphrase (by phone). **Restore-tested on 26 Nov 2026:** it opened with the passphrase and its
+   database loaded into a scratch PostgreSQL with all 125 tables row-for-row identical, 0 load errors. The older copy (20 Nov) was removed from the current files; it stays in git history.
 
 ## 3. Records (live, not deleted, 26 Nov 2026)
 
