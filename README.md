@@ -32,6 +32,7 @@ switched off, so strangers cannot make accounts. After joining, everyone uses th
 | Encrypted copy of the live data in this repository (`data/`) | **Done** (20 Nov 2026, 10:12 UTC). Passphrase: only Rishi has it |
 | Logins | Aroosh (Admin), Umaima (Supervisor), Test Agent: same email and password as on Aroosh's laptop |
 | Email automations (High-priority alert, SLA breach alert) | **Running** on the cloud, through her connected mailbox |
+| Twenty version | **v2.59.3** (upgraded from v2.51.0 on 26 Nov 2026) |
 | Automatic backups of the cloud server | **Done** (25 Nov 2026): nightly database + files backup kept 7 days, and a daily disk snapshot kept 7 days. No copy off the server yet |
 
 Full detail of what is live and what is missing: [docs/LIVE-CLOUD-COPY.md](docs/LIVE-CLOUD-COPY.md).

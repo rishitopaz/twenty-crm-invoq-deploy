@@ -20,7 +20,7 @@ mailbox synced 22 emails. On 26 Nov Aroosh also said her own copy has no work af
 | Operating system | Ubuntu 24.04.5 LTS, automatic security updates on |
 | Fixed IP address | 34.18.187.167 (reserved as `aroosh-crm-ip`, so it never changes) |
 | Firewall | Google Cloud: only ports 80 and 443 from the internet, SSH only through Google's secure tunnel (IAP). Server firewall (ufw): SSH, 80, 443 |
-| Twenty version | **v2.51.0**, the same version and the same build as Aroosh's laptop (pinned; it changes only when someone upgrades on purpose) |
+| Twenty version | **v2.59.3** since 26 Nov 2026 (upgraded from v2.51.0, Aroosh's laptop version, at her request; pinned, it changes only when someone upgrades on purpose). Undo points: snapshot `pre-upgrade-aroosh-v2-59-3-20261126-0611`, backup `~/backups/crm-20261126-0610.sql.gz`, old settings `~/env.before-2.59.3` |
 | Other programs | PostgreSQL 16 (database), Redis 7 (queues), Caddy 2 (HTTPS) |
 | HTTPS certificate | Let's Encrypt, issued and renewed automatically by Caddy |
 | Database size | 26 MB |

@@ -83,12 +83,20 @@ docker compose --env-file .env exec -T server tar -C /app/packages/twenty-server
 
 1. Make a backup (section 3).
 2. Read Twenty's release notes for the new version (https://github.com/twentyhq/twenty/releases).
-3. In `.env`, change `TAG=v2.51.0` (today's version, same as Aroosh's laptop) to the new one, for example `TAG=v2.59.2`.
-4. `docker compose --env-file .env pull && docker compose --env-file .env up -d`
-5. Wait until `server` is **(healthy)** (database upgrades can take a few minutes), then log in and check.
+3. Take a disk snapshot too: `gcloud compute snapshots create pre-upgrade-<date> --source-disk=aroosh-crm --source-disk-zone=me-central1-a`.
+4. In `.env`, change `TAG=` (today: **v2.59.3**) to the new version.
+5. `docker compose --env-file .env pull && docker compose --env-file .env up -d`
+6. Wait until `server` is **(healthy)** (database upgrades take a few minutes). If `up -d` says "dependency failed to
+   start", that only means it stopped waiting: check again a minute later, then run `up -d` once more to start the worker.
+7. Check: both `server` and `worker` run the new image (`docker inspect -f '{{.Config.Image}}' twenty-invoq-server-1`),
+   the record counts are unchanged, and the workflows still run (section 8).
 
 To go back: set the old `TAG` again **and** restore the backup from step 1 (the database upgrade does not undo
-itself).
+itself). Last resort: create a new disk from the snapshot.
+
+**Done on 26 Nov 2026: v2.51.0 → v2.59.3** with these steps. Downtime about 4 minutes. All records, users, roles and the
+6 workflows unchanged. The upgrade removed 12 fields of Twenty's own empty internal workflow tables (not Aroosh's data) and
+added Twenty's new access-group and AI-chat tables.
 
 ## 5. Use your own domain instead of sslip.io
 
