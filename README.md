@@ -31,9 +31,9 @@ switched off, so strangers cannot make accounts. After joining, everyone uses th
 | Part | Status |
 |---|---|
 | CRM running on Google Cloud with HTTPS (padlock in the browser) | **Done** |
-| Aroosh's **exact** laptop data: every record, users, roles, workflows, API keys, mailbox | **Done** (19 Nov 2026), checked identical |
-| Encrypted copy of the live data in this repository (`data/`) | **Done** (20 Nov 2026, 10:12 UTC). Passphrase: only Rishi has it |
-| Logins | Aroosh (Admin), Umaima (Supervisor), Test Agent (Agent): same email and password as on Aroosh's laptop. Rishi (Member) joined by invite on 19 Nov |
+| Aroosh's **exact** laptop data: every record, users, roles, workflows, API keys, mailbox | **Done**: her latest export (26 Nov 2026, 08:31 UTC) is live, checked identical |
+| Encrypted copy of the live data in this repository (`data/`) | **Done** (26 Nov 2026, 09:07 UTC, v2.59.3). Passphrase: only Rishi has it |
+| Logins | Aroosh (Admin), Umaima (Supervisor), Test Agent (Agent): same email and password as on Aroosh's laptop |
 | Email automations (High-priority alert, SLA breach alert) | **Running** on the cloud, through her connected mailbox |
 | Twenty version | **v2.59.3** (upgraded from v2.51.0 on 26 Nov 2026) |
 | Automatic backups of the cloud server | **Done** (25 Nov 2026): nightly database + files backup kept 7 days, and a daily disk snapshot kept 7 days. No copy off the server yet |
@@ -84,7 +84,7 @@ name, so we get a real HTTPS certificate without buying a domain. A company doma
 | `scripts/build_from_docs.py` | Builds the CRM structure and sample records **from Aroosh's documents** (the fallback, Way B) |
 | `scripts/backup-nightly.sh` | The nightly backup of the database and uploaded files (runs from cron on the live server) |
 | `scripts/export-from-laptop.sh` | What Aroosh runs on her Mac to make the export file |
-| `data/` | The encrypted copy of the live CRM data: `twenty-export-20261120-1412.enc` (about 70 MB, made from the live server on 20 Nov 2026). Ask Rishi for the passphrase, never in the same message as anything else about it |
+| `data/` | The encrypted copy of the live CRM data: `twenty-export-20261126-1305.enc` (about 73 MB, made from the live server on 26 Nov 2026, Twenty v2.59.3). Ask Rishi for the passphrase, never in the same message as anything else about it |
 
 ---
 

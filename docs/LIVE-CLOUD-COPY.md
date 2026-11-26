@@ -1,12 +1,11 @@
 # The live cloud CRM: what is on it
 
 **Address:** https://crm.34-18-187-167.sslip.io
-**State on:** 26 November 2026
+**State on:** 26 November 2026, 09:10 UTC
 
-The live CRM is an **exact copy of Aroosh's laptop CRM** as she exported it on 19 November 2026 at 10:14 UTC:
-every record, her users and passwords, roles, workflows, API keys and the connected mailbox.
-**Since then almost nothing changed on the cloud copy** (section 3): one ticket and one catalog entry were added, and the
-mailbox synced 22 emails. On 26 Nov Aroosh also said her own copy has no work after 19 November.
+The live CRM is an **exact copy of Aroosh's laptop CRM** as she exported it on **26 November 2026 at 08:31 UTC**
+(file `twenty-export-20261126-1231.enc`), then upgraded to v2.59.3: every record, her users and passwords, roles,
+workflows, API keys and the connected mailbox.
 
 ---
 
@@ -16,82 +15,67 @@ mailbox synced 22 emails. On 26 Nov Aroosh also said her own copy has no work af
 |---|---|
 | Provider | Google Cloud, region me-central1 (Doha), zone me-central1-a |
 | Server name | `aroosh-crm` |
-| Size | e2-medium: 2 processors, 4 GB memory (+2 GB swap), 40 GB disk (26 GB free on 26 Nov 2026) |
+| Size | e2-medium: 2 processors, 4 GB memory (+2 GB swap), 40 GB disk (25 GB free on 26 Nov 2026) |
 | Operating system | Ubuntu 24.04.5 LTS, automatic security updates on |
 | Fixed IP address | 34.18.187.167 (reserved as `aroosh-crm-ip`, so it never changes) |
 | Firewall | Google Cloud: only ports 80 and 443 from the internet, SSH only through Google's secure tunnel (IAP). Server firewall (ufw): SSH, 80, 443 |
-| Twenty version | **v2.59.3** since 26 Nov 2026 (upgraded from v2.51.0, Aroosh's laptop version, at her request; pinned, it changes only when someone upgrades on purpose). Undo points: snapshot `pre-upgrade-aroosh-v2-59-3-20261126-0611`, backup `~/backups/crm-20261126-0610.sql.gz`, old settings `~/env.before-2.59.3` |
+| Twenty version | **v2.59.3** since 26 Nov 2026 (upgraded from v2.51.0, Aroosh's laptop version, at her request; pinned, it changes only when someone upgrades on purpose). Upgraded twice on 26 Nov (before and after loading Aroosh's newer data). Undo points: snapshots `pre-upgrade-aroosh-v2-59-3-20261126-0611` and `pre-reload-aroosh-20261126-0838`, backups in `~/backups/` |
 | Other programs | PostgreSQL 16 (database), Redis 7 (queues), Caddy 2 (HTTPS) |
 | HTTPS certificate | Let's Encrypt, issued and renewed automatically by Caddy |
-| Database size | 39 MB (26 Nov 2026) |
+| Database size | 31 MB (26 Nov 2026) |
 | Public sign-up | **Off**: people join only with an invite link (Invite by link is currently off too) |
 | Separate from | Rishi's own Real Estate CRM (`twenty-crm`, another server). The two share nothing |
 
 ## 2. How the content got there
 
-1. Aroosh ran `scripts/export-from-laptop.sh` on her Mac. It made one encrypted file,
-   `twenty-export-20261119-1414.enc` (36 MB), with her database, uploaded files, settings and version.
-2. On the server, `scripts/import-export.sh` opened the file and loaded it ([DEPLOYMENT.md](../DEPLOYMENT.md), Way A).
-3. The check at the end compared all 45 data tables with the counts taken on her laptop: **DATA IDENTICAL**.
-4. A second, separate check counted the records one type at a time (table below): all match.
+1. **19 Nov 2026:** Aroosh's first export (`twenty-export-20261119-1414.enc`) was loaded with `scripts/import-export.sh`
+   ([DEPLOYMENT.md](../DEPLOYMENT.md), Way A). Check: **DATA IDENTICAL** (all 45 data tables).
+2. **26 Nov 2026, 06:12 UTC:** upgraded v2.51.0 → v2.59.3 at Aroosh's request ([OPERATIONS.md](OPERATIONS.md), section 4).
+3. **26 Nov 2026, 08:44 UTC:** Aroosh's **newer export** (made 08:31 UTC on her laptop) was loaded the same way.
+   Check: **DATA IDENTICAL** (all 45 data tables). This **replaced** the cloud data. What only the cloud had is not in
+   the live CRM any more: one ticket Aroosh created on the cloud on 20 Nov, Rishi's Member login, and emails synced
+   after 19 Nov. All of it is kept in the backup `~/backups/crm-20261126-0838.sql.gz` and the snapshot
+   `pre-reload-aroosh-20261126-0838`.
+4. **26 Nov 2026, 08:52 UTC:** upgraded again to v2.59.3 (healthy at 08:57). The automations ran at 09:00 and completed;
+   no ticket or service request was past its deadline, so no duplicate alert emails.
+5. **26 Nov 2026, 09:07 UTC:** an encrypted copy of the live data was saved in this repository:
+   `data/twenty-export-20261126-1305.enc` (about 73 MB, Twenty v2.59.3, so Way A loads it at the current version).
+   Only Rishi has its passphrase (by phone). Checked: it opens with the passphrase and lists all its parts. Not yet
+   restore-tested into a database. The older copy (20 Nov) was removed from the current files; it stays in git history.
 
-5. On 20 November 2026 (10:12 UTC) an encrypted copy of the **live cloud data** was made and stored in this
-   repository (`data/twenty-export-20261120-1412.enc`). It has the same layout as Aroosh's export, so
-   `scripts/import-export.sh` loads it ([DEPLOYMENT.md](../DEPLOYMENT.md), Way A). Only Rishi has its passphrase.
-   **Restore-tested on 26 November 2026:** the file opened with its passphrase, and its database loaded into a scratch
-   PostgreSQL with all 120 tables row-for-row identical to the list saved inside the file. The full Twenty application
-   was not started from it in that test (the same method did that for Aroosh's first export on 19 Nov).
+## 3. Records (live, not deleted, 26 Nov 2026)
 
-Before this, the live copy had been rebuilt from her documents (Way B). That version was replaced. It is kept
-as a backup on the server and as a Google Cloud disk snapshot (see [OPERATIONS.md](OPERATIONS.md)).
-
-## 3. Records (checked on the live CRM after the import)
-
-| Type | On Aroosh's laptop | On the cloud |
+| Type | First copy (19 Nov) | Now (26 Nov) |
 |---|---|---|
 | Tickets | 18 | 18 |
-| Service Requests | 12 | 12 |
-| People | 14 | 14 |
-| Companies | 3 (Urban Wear Boutique, Simra's Bookstore, Notion) | 3 |
-| Catalog Entries | 20 | 20 |
-| Interactions | 12 | 12 |
-| Notes | 9 | 9 |
-| Workflows | 6 | 6 |
-| API keys | 3 (2 active) | 3 (2 active) |
-| Users | 3 | 3 |
-
-**Since the import (counted on the live CRM, 26 November 2026, records that are not deleted):**
-
-| Type | Right after import (19 Nov) | Now (26 Nov) |
-|---|---|---|
-| Tickets | 18 | 19 (one created by Aroosh on 20 Nov) |
-| Service Requests | 12 | 12 |
-| People | 14 | 14 |
+| Service Requests | 12 | **25** (13 new: 2 on 20 Nov, 4 on 24 Nov, 6 on 25 Nov, 1 on 26 Nov) |
+| People | 14 | **19** |
 | Companies | 3 | 3 |
-| Catalog Entries | 20 | 20 (one added and one removed) |
+| Catalog Entries | 20 | 21 |
 | Interactions | 12 | 12 |
 | Notes | 9 | 9 |
 | Workflows | 6 | 6 |
-| Users (people who can log in) | 3 | 4 (Rishi was added as a Member) |
+| API keys (active) | 2 | 2 |
+| Users (people who can log in) | 3 | 3 |
 
-**Correction (26 Nov):** an earlier version of this file said the cloud had gained many records (for example 18 Service
-Requests, 17 People, 7 Companies). That was wrong: those numbers counted records that are **marked deleted** but still
-stored. Counting only live records, nothing grew. The database also holds deleted records: Service Requests 18 in total
-(12 live), People 17 (14 live), Companies 7 (3 live).
+The database also keeps records that were **deleted** in the CRM (Service Requests 31 in total, People 22, Companies 7,
+Catalog Entries 22). Only the live numbers above are what people see.
 
-**Still, do not reload an older export over the live CRM:** it would erase the one new ticket and the newest emails.
+**Do not reload an older export over the live CRM:** it would erase everything made since that export.
 
 ## 4. People and roles
 
 | Person | Role | How they log in |
 |---|---|---|
 | Aroosh Ahmed | Admin | Her usual email and password from her laptop CRM |
-| Umaima Suleman | Supervisor | The email and password she used on Aroosh's laptop CRM (not a password made on the earlier cloud copy) |
+| Umaima Suleman | Supervisor | The email and password she uses on Aroosh's laptop CRM |
 | Test Agent | Agent | Aroosh's test account |
-| Rishi Upadhyay | Member | Joined by invite link on 19 Nov 2026. A Member cannot change settings or create API keys |
+
+Rishi is **not** a member since the 26 Nov reload (his login was only on the cloud). Aroosh re-invites him if needed.
+Only an Admin (today: Aroosh) can change roles, settings or create API keys.
 
 Roles in the workspace: Admin, Member, Agent, Supervisor, API Integration, External API access (plus Twenty's
-system role "Workspace Custom Application": leave it alone).
+system roles "Workspace Custom Application" and "Standard role": leave them alone).
 
 **Forgotten password:** "Forgot password" needs the server to send email, which is not set up. Aroosh (Admin)
 removes and re-invites the person instead.
@@ -112,15 +96,15 @@ at 12:15 UTC: completed, nothing to alert about (the only open records past thei
 were already Breached), 0 emails sent.
 
 **Two copies for now:** Aroosh's laptop CRM still exists. A ticket created on one copy does not appear on the
-other, and only the copy where it was created sends its alert. Since 19 Nov only one new ticket was made, on the
-cloud. Use the cloud address for real work.
+other, and only the copy where it was created sends its alert. Since 26 Nov the cloud holds Aroosh's latest data:
+use the cloud address for real work.
 
 ## 6. API keys
 
 | Key | Expires |
 |---|---|
 | Retail CRM | 4 October 2126 |
-| Umaima external | **Expired on 21 November 2026** (checked 25 Nov). Nothing is known to use it. If something does, create a new key (Settings → APIs & Webhooks) |
+| Umaima external | **4 December 2026** (renewed on Aroosh's laptop; came with the 26 Nov data). Aroosh creates a new one when needed |
 
 Keys made on her laptop came over with her data (same keys; only the address changes from `http://localhost:3000` to
 `https://crm.34-18-187-167.sslip.io`). They were not re-tested after the 26 Nov 2026 upgrade. Only an Admin can
@@ -132,5 +116,5 @@ create new keys.
 |---|---|
 | Backup copy **off** the server (Google Drive) | The nightly backup and the daily disk snapshot exist since 25 Nov 2026 ([OPERATIONS.md](OPERATIONS.md), "Backups"); a Drive copy is still to do |
 | Server email (password reset, invitations by email) | Invite by link works without it |
-| Two-step login (2FA) | No user has it switched on (one set-up was started and not finished, 26 Nov) |
+| Two-step login (2FA) | No user has it switched on |
 | Iframe embedding for INVOQ | Waiting for INVOQ's agent-screen address (Settings → General → Security → Iframe embedding) |

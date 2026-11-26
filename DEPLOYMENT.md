@@ -65,7 +65,7 @@ switches on automatic security updates, and adds 2 GB of swap on small machines.
 
 ## Step 4A. Way A: deploy Aroosh's exact data (about 10 minutes)
 
-You need the export file in `data/` and its passphrase. For `data/twenty-export-20261120-1412.enc` only **Rishi** has
+You need the export file in `data/` and its passphrase. For `data/twenty-export-20261126-1305.enc` only **Rishi** has
 the passphrase; ask him by phone. It is never written down in GitHub.
 
 ```bash
@@ -86,10 +86,9 @@ The script asks for the passphrase and then does everything by itself:
 
 The last line shows the address: `LIVE: https://...`. Log in with the same email and password as on Aroosh's CRM.
 
-**Then upgrade to the current version.** The file was made on 20 Nov 2026, when the CRM ran **v2.51.0**, so the import
-starts v2.51.0. The live CRM runs **v2.59.3**. Upgrade the same way the live one was upgraded on 26 Nov 2026:
-[docs/OPERATIONS.md](docs/OPERATIONS.md), section 4 (backup, snapshot, change `TAG` to `v2.59.3`, restart, check). About
-5 minutes.
+**Version:** the file was made on 26 Nov 2026 from the live CRM running **v2.59.3**, so the import starts v2.59.3
+directly. An older export (made on a lower version) loads on that lower version; then upgrade it as in
+[docs/OPERATIONS.md](docs/OPERATIONS.md), section 4.
 
 ## Step 4B. Way B: build from Aroosh's documents (about 15 minutes)
 
