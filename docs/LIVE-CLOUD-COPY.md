@@ -1,11 +1,12 @@
 # The live cloud CRM: what is on it
 
 **Address:** https://crm.34-18-187-167.sslip.io
-**State on:** 20 November 2026, 10:14 UTC
+**State on:** 26 November 2026
 
-The live CRM started as an **exact copy of Aroosh's laptop CRM** as she exported it on 19 November 2026 at 10:14 UTC:
+The live CRM is an **exact copy of Aroosh's laptop CRM** as she exported it on 19 November 2026 at 10:14 UTC:
 every record, her users and passwords, roles, workflows, API keys and the connected mailbox.
-**Since then people have worked on the cloud copy, so it now has more records than the laptop** (section 3).
+**Since then almost nothing changed on the cloud copy** (section 3): one ticket and one catalog entry were added, and the
+mailbox synced 22 emails. On 26 Nov Aroosh also said her own copy has no work after 19 November.
 
 ---
 
@@ -59,21 +60,26 @@ as a backup on the server and as a Google Cloud disk snapshot (see [OPERATIONS.m
 | API keys | 3 (2 active) | 3 (2 active) |
 | Users | 3 | 3 |
 
-**Since the import (counted on the live CRM, 20 November 2026, 10:14 UTC):** new records were added on the cloud.
+**Since the import (counted on the live CRM, 26 November 2026, records that are not deleted):**
 
-| Type | Right after import (19 Nov) | Now (20 Nov) |
+| Type | Right after import (19 Nov) | Now (26 Nov) |
 |---|---|---|
-| Tickets | 18 | 19 |
-| Service Requests | 12 | 18 |
-| People | 14 | 17 |
-| Companies | 3 | 7 |
-| Catalog Entries | 20 | 22 |
+| Tickets | 18 | 19 (one created by Aroosh on 20 Nov) |
+| Service Requests | 12 | 12 |
+| People | 14 | 14 |
+| Companies | 3 | 3 |
+| Catalog Entries | 20 | 20 (one added and one removed) |
 | Interactions | 12 | 12 |
 | Notes | 9 | 9 |
 | Workflows | 6 | 6 |
 | Users (people who can log in) | 3 | 4 (Rishi was added as a Member) |
 
-**Do not reload an older export over the live CRM:** it would erase these new records.
+**Correction (26 Nov):** an earlier version of this file said the cloud had gained many records (for example 18 Service
+Requests, 17 People, 7 Companies). That was wrong: those numbers counted records that are **marked deleted** but still
+stored. Counting only live records, nothing grew. The database also holds deleted records: Service Requests 18 in total
+(12 live), People 17 (14 live), Companies 7 (3 live).
+
+**Still, do not reload an older export over the live CRM:** it would erase the one new ticket and the newest emails.
 
 ## 4. People and roles
 
